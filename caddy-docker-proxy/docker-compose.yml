@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - CADDY_INGRESS_NETWORKS=caddy
+    networks:
+      - caddy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../Caddyfile:/etc/caddy/Caddyfile
+    restart: unless-stopped
+    deploy:
+    labels: # Global options
+      caddy.email: ombi@razzormail.com
+
+  whoami:
+    image: containous/whoami
+    networks:
+      - caddy
+    labels:
+      caddy: ombi.razzormail.com
+      caddy.reverse_proxy: "{{upstreams 80}}"
+
+
+networks:
+  caddy:
+    external: true
+
+volumes:
+  caddy_data: {}

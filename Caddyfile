@@ -5,3 +5,15 @@ https://ombi.razzormail.com {
   tls self_signed
   reverse_proxy localhost:5000
 }
+www.ombi.razzormail.com {
+  reverse_proxy localhost:5000
+}
+
+{
+        # debug
+        debug
+        acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+        email a@razzormail.com
+}
+
+rewrite * localhost:5000
